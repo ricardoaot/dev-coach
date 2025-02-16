@@ -1,50 +1,20 @@
-# React + TypeScript + Vite
+# Dev Coach 🧑‍💻🚀  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Dev Coach** es una aplicación diseñada para guiar a desarrolladores en su camino hacia un mayor nivel de seniority. Este entrenador virtual ofrece herramientas, ejercicios y recomendaciones personalizadas para fortalecer habilidades técnicas, prácticas de desarrollo, y soft skills esenciales en el entorno profesional.  
 
-Currently, two official plugins are available:
+## Características principales  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Diagnóstico inicial:** Evalúa el nivel actual del desarrollador con una serie de preguntas y retos técnicos.  
+- **Entrenamientos personalizados:** Planes de aprendizaje adaptados a las áreas de mejora detectadas.  
+- **Ejercicios técnicos:** Desafíos prácticos en tecnologías como React, TypeScript, Node.js, y más.  
+- **Soft Skills:** Consejos y dinámicas para mejorar habilidades como comunicación, liderazgo técnico y trabajo en equipo.  
+- **Progreso visible:** Métricas y estadísticas para medir el avance del usuario.  
+- **Recomendaciones de recursos:** Cursos, libros, y artículos personalizados según el nivel y área de interés.  
 
-## Expanding the ESLint configuration
+## Tecnologías utilizadas  
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Frontend:** React + TypeScript  
+- **Backend:** Node.js + Express  
+- **Base de datos:** PostgreSQL  
+- **Entorno de desarrollo:** Vite para el frontend, ESLint configurado para TypeScript y React con reglas estrictas.  
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
