@@ -1,12 +1,8 @@
-import { useState } from "react";
+import { useFormik } from "formik";
 import { QuestionData } from "../molecules/QuestionForm";
 import { QuestionFormContent } from "../molecules/QuestionForm";
 import { Button } from "../atoms/Button";
 export const QuestionForm: React.FC = () => {
-    const [selectedOption, setSelectedOption] = useState<string | null>(null);
-    const [submitted, setSubmitted] = useState(false);
-    const [unknownQuestions, setUnknownQuestions] = useState<{ question: string; selectedOption: string }[]>([]);
-  
     const questionData: QuestionData = {
       question: "¿Qué es React?",
       explanation:
@@ -39,22 +35,21 @@ export const QuestionForm: React.FC = () => {
       ],
     };
   
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      setSubmitted(true);
-      if (selectedOption === "No sé") {
-        const newUnknownQuestion = {
-          question: questionData.question,
-          selectedOption,
-        };
-        setUnknownQuestions((prev) => [...prev, newUnknownQuestion]);
-        saveUnknownQuestionsToFile([...unknownQuestions, newUnknownQuestion]);
-      }
-    };
-  
-    const handleOptionChange = (option: string) => {
-      setSelectedOption(option);
-    };
+    const formik = useFormik({
+      initialValues: {
+        selectedOption: "",
+      },
+      onSubmit: (values) => {
+        if (values.selectedOption === "No sé") {
+          const unknownQuestion = {
+            question: questionData.question,
+            selectedOption: values.selectedOption,
+          };
+          saveUnknownQuestionsToFile([unknownQuestion]);
+        }
+        alert(`Seleccionaste: ${values.selectedOption}`);
+      },
+    });
   
     const saveUnknownQuestionsToFile = (questions: { question: string; selectedOption: string }[]) => {
       const fileData = JSON.stringify(questions, null, 2);
@@ -68,29 +63,20 @@ export const QuestionForm: React.FC = () => {
   
     return (
       <div className="p-4 max-w-lg mx-auto border rounded shadow">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <QuestionFormContent
             questionData={questionData}
-            selectedOption={selectedOption}
-            handleOptionChange={handleOptionChange}
+            selectedOption={formik.values.selectedOption}
+            handleOptionChange={(option) => formik.setFieldValue("selectedOption", option)}
           />
           <Button
             type="submit"
             className="mt-4 bg-blue-500 text-white"
           >
             Enviar
-          </Button>
+            </Button>
         </form>
-        {submitted && (
-          <div className="mt-4 p-3 bg-gray-100 rounded">
-            <h2 className="font-bold">Resultado:</h2>
-            <p>
-              {selectedOption
-                ? `Seleccionaste: ${selectedOption}`
-                : "No seleccionaste ninguna opción."}
-            </p>
-          </div>
-        )}
       </div>
     );
   };
+  

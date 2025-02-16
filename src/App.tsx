@@ -1,8 +1,11 @@
+import { QuestionForm } from "./components/organisms/QuestionFormComponent";
+
 function App() {
-  return <>
-  
-  
-  </>;
+  return (
+    <>
+      <QuestionForm />
+    </>
+  );
 }
 
 export default App;
