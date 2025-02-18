@@ -14,6 +14,12 @@ export interface QuestionData {
     answer_options: AnswerOption[];
   }
 
+  export interface UserAnswer{
+    question:string;
+    selectedOption:string;
+    isCorrect : boolean;
+  }
+
 
 interface QuestionFormContentProps {
     questionData: QuestionData;
