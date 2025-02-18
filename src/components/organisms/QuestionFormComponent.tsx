@@ -1,4 +1,4 @@
-import { Form, Formik,  } from "formik";
+import { Form, Formik } from "formik";
 import { QuestionData } from "../molecules/QuestionForm";
 import { QuestionFormContent } from "../molecules/QuestionForm";
 import { Button } from "../atoms/Button";
@@ -31,17 +31,14 @@ export const QuestionForm: React.FC = () => {
 
   const currentQuestion = questionData[currentQuestionIndex];
 
-
-      // if (values.selectedOption === "No sé") {
-      //   const unknownQuestion = {
-      //     question: values.question,
-      //     selectedOption: values.selectedOption,
-      //   };
-      //   saveUnknownQuestionsToFile([unknownQuestion]);
-      // }
-      // alert(`Seleccionaste: ${values.selectedOption}`);
-    
-
+  // if (values.selectedOption === "No sé") {
+  //   const unknownQuestion = {
+  //     question: values.question,
+  //     selectedOption: values.selectedOption,
+  //   };
+  //   saveUnknownQuestionsToFile([unknownQuestion]);
+  // }
+  // alert(`Seleccionaste: ${values.selectedOption}`);
 
   // const saveUnknownQuestionsToFile = (questions: { question: string; selectedOption: string }[]) => {
   //   const fileData = JSON.stringify(questions, null, 2);
@@ -55,39 +52,38 @@ export const QuestionForm: React.FC = () => {
 
   return (
     <Formik
-    initialValues={ {
-      selectedOption: "",
-    }}
-    onSubmit={(values) => {
-      console.log(values);
-    }}
-
+      initialValues={{
+        selectedOption: "",
+      }}
+      onSubmit={(values) => {
+        console.log(values);
+      }}
     >
       {({ isSubmitting }) => (
-      <div className="p-4 max-w-lg mx-auto border rounded shadow">
-        <Form>
-        
-          <QuestionFormContent
-            questionData={currentQuestion}
-            selectedOption={selectedOptions[currentQuestionIndex] || ""}
-            handleOptionChange={handleOptionChange}
-          />
-        
-          <Button type="submit" className="mt-4 bg-blue-500 text-white">
-            Guardar
-          </Button>
-          <Button
-            type="button"
-            className="mt-4 bg-blue-500 text-white"
-            disabled={isSubmitting}
-            onClick={handleNext}
-          >
-            {currentQuestionIndex < questionData.length - 1
-              ? "Siguiente"
-              : "Finalizar"}
-          </Button>
-        </Form>
-      </div>
+        <div className="max-w-lg p-4 mx-auto border rounded shadow">
+          <Form>
+            <QuestionFormContent
+              questionData={currentQuestion}
+              selectedOption={selectedOptions[currentQuestionIndex] || ""}
+              handleOptionChange={handleOptionChange}
+            />
+            <div className="flex justify-center space-x-4">
+              <Button type="submit" className="mt-4 text-white bg-blue-500">
+                Guardar
+              </Button>
+              <Button
+                type="button"
+                className="mt-4 text-white bg-blue-500"
+                disabled={isSubmitting}
+                onClick={handleNext}
+              >
+                {currentQuestionIndex < questionData.length - 1
+                  ? "Siguiente"
+                  : "Finalizar"}
+              </Button>
+            </div>
+          </Form>
+        </div>
       )}
     </Formik>
   );
