@@ -46,6 +46,7 @@ export const QuestionForm: React.FC = () => {
   };
   
 
+
   //   // Filtra solo las preguntas respondidas y verifica si la respuesta es correcta
   //   const responses: UserAnswer[] = questionData
   //     .map((question, index) => {
@@ -67,6 +68,7 @@ export const QuestionForm: React.FC = () => {
   //   } catch (error) {
   //     console.error("Error al guardar respuestas:", error);
   //   }
+
   // };
   const currentQuestion = questionData[currentQuestionIndex];
 
