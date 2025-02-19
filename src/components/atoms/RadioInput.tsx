@@ -19,7 +19,7 @@ export const RadioInput: React.FC<RadioButtonProps> = ({
         checked={selectedOption === option}
         className="form-radio"
       />
-      <span>{option}</span>
+      {/*     <span>{option}</span> */}
     </label>
   );
 };
