@@ -19,5 +19,3 @@
 - **Entorno de desarrollo:** Vite para el frontend, ESLint configurado para TypeScript y React con reglas estrictas.
 
 ## Linea añadida para testear github actions
-
-## otra linea mas jajajaj
