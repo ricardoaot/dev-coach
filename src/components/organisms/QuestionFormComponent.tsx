@@ -104,7 +104,7 @@ export const QuestionForm: React.FC = () => {
       }}
     >
       {({ values, handleChange, handleSubmit }) => (
-        <div className="p-4 max-w-lg mx-auto border rounded shadow">
+        <div className="p-4 max-w-2xl mx-auto border rounded shadow">
           <Form onSubmit={handleSubmit}>
             <QuestionFormContent
               questionData={currentQuestion}
