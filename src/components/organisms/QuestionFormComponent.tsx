@@ -4,10 +4,12 @@ import { QuestionFormContent } from "../molecules/QuestionForm";
 import { Button } from "../atoms/Button";
 import preguntas from "../../assets/preguntas_completas_react.json";
 import { useState } from "react";
+import QuestionExplanation from "../molecules/QuestionExplanation";
 
 export const QuestionForm: React.FC = () => {
   const questionData: QuestionData[] = preguntas;
 
+  const [showExplanation, setShowExplanation] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Controla la pregunta actual
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: number]: string;
@@ -25,12 +27,14 @@ export const QuestionForm: React.FC = () => {
     const selectedOption = selectedOptions[currentQuestionIndex];
 
     if (selectedOption) {
-      const isCorrect = currentQuestion.answerOptions.some((option) => option.correctAnswer && option.option === selectedOption); // Lógica para determinar si la respuesta es correcta
+      const isCorrect = currentQuestion.answerOptions.some(
+        (option) => option.correctAnswer && option.option === selectedOption
+      ); // Lógica para determinar si la respuesta es correcta
       const newAnswer: UserAnswer = {
         questionId: currentQuestion.questionId,
         selectedOption,
         isCorrect,
-        createdAt:new Date()
+        createdAt: new Date(),
       };
 
       // Guardar la respuesta
@@ -45,8 +49,6 @@ export const QuestionForm: React.FC = () => {
       alert("Has completado todas las preguntas.");
     }
   };
-  
-
 
   //   // Filtra solo las preguntas respondidas y verifica si la respuesta es correcta
   //   const responses: UserAnswer[] = questionData
@@ -84,49 +86,60 @@ export const QuestionForm: React.FC = () => {
 
   const saveAnswer = (question: UserAnswer): void => {
     // Recuperar las respuestas guardadas como string desde localStorage
-    const answerSaved = localStorage.getItem('respuestasUsuario');
-  
+    const answerSaved = localStorage.getItem("respuestasUsuario");
+
     // Convertir el string JSON a un array de UserAnswer o inicializar como un array vacío
-    const answers: UserAnswer[] = answerSaved ? (JSON.parse(answerSaved) as UserAnswer[]) : [];
-  
+    const answers: UserAnswer[] = answerSaved
+      ? (JSON.parse(answerSaved) as UserAnswer[])
+      : [];
+
     // Agregar la nueva respuesta al array
     answers.push(question);
-  
+
     // Guardar el array actualizado en localStorage
-    localStorage.setItem('respuestasUsuario', JSON.stringify(answers));
+    localStorage.setItem("respuestasUsuario", JSON.stringify(answers));
   };
-  
 
   return (
     <Formik
       initialValues={{
         selectedOption: "",
       }}
-      onSubmit={(values, ) => {
-        console.log("Respuesta guardada:", values.selectedOption);
-        const correctAnswer =  currentQuestion.answerOptions.find((r)=>r.correctAnswer === true);
-
-        const isValid = values.selectedOption === correctAnswer?.option
-        console.log(isValid)
-        // Guarda la respuesta seleccionada
-        handleOptionChange(values.selectedOption);
-          const newAnswer:UserAnswer ={
-            questionId:currentQuestion.questionId,
-            selectedOption:values.selectedOption,
-            isCorrect: isValid,
-            createdAt:new Date()
+      onSubmit={(values) => {
+        if (!showExplanation) {
+          if (values.selectedOption === "") {
+            alert("Debes seleccionar una respuesta para continuar");
+            return;
           }
-          saveAnswer(newAnswer)
-        // Avanza a la siguiente pregunta
-        if(values.selectedOption === ""){
-          alert("Debes seleccionar una respuesta para continuar");
-          return;
+
+          const correctAnswer = currentQuestion.answerOptions.find(
+            (r) => r.correctAnswer === true
+          );
+
+          const isValid = values.selectedOption === correctAnswer?.option;
+          console.log(isValid);
+
+          // Guarda la respuesta seleccionada
+          handleOptionChange(values.selectedOption);
+          const newAnswer: UserAnswer = {
+            questionId: currentQuestion.questionId,
+            selectedOption: values.selectedOption,
+            isCorrect: isValid,
+            createdAt: new Date(),
+          };
+          saveAnswer(newAnswer);
+
+          // Mostrar explicación antes de avanzar
+          setShowExplanation(true);
+        } else {
+          // Si ya se mostró la explicación, avanzar a la siguiente pregunta
+          setShowExplanation(false);
+          handleNext();
         }
-        handleNext();
       }}
     >
       {({ values, handleChange, handleSubmit }) => (
-        <div className="p-4 max-w-2xl mx-auto border rounded shadow">
+        <div className="max-w-2xl p-4 mx-auto border rounded shadow">
           <Form onSubmit={handleSubmit}>
             <QuestionFormContent
               questionData={currentQuestion}
@@ -149,10 +162,15 @@ export const QuestionForm: React.FC = () => {
               />
               <label htmlFor="no-se">No sé</label>
             </div>
+
             <div className="flex justify-between mt-4">
               <Button
                 type="button"
-                className="bg-gray-500 text-white"
+                className={`text-white bg-gray-500   ${
+                  showExplanation
+                    ? "opacity-0 pointer-events-none"
+                    : "opacity-100"
+                }`}
                 onClick={handleSkip}
               >
                 Skip
@@ -160,15 +178,23 @@ export const QuestionForm: React.FC = () => {
 
               <Button
                 type="submit"
-                className="bg-blue-500 text-white"
+                className="text-white bg-blue-500"
                 disabled={!values.selectedOption}
               >
-                {currentQuestionIndex < questionData.length - 1
-                  ? "Confirmar Respuesta"
-                  : "Finalizar"}
+                {showExplanation
+                  ? currentQuestionIndex < questionData.length - 1
+                    ? "Siguiente"
+                    : "Finalizar"
+                  : "Confirmar Respuesta"}
               </Button>
             </div>
           </Form>
+
+          {showExplanation && (
+            <div className="mt-3">
+              <QuestionExplanation questionData={currentQuestion} />
+            </div>
+          )}
         </div>
       )}
     </Formik>
