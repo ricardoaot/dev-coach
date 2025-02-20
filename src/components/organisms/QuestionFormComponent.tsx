@@ -25,11 +25,12 @@ export const QuestionForm: React.FC = () => {
     const selectedOption = selectedOptions[currentQuestionIndex];
 
     if (selectedOption) {
-      const isCorrect = currentQuestion.answer_options.some((option) => option.correct_answer && option.option === selectedOption); // Lógica para determinar si la respuesta es correcta
+      const isCorrect = currentQuestion.answerOptions.some((option) => option.correctAnswer && option.option === selectedOption); // Lógica para determinar si la respuesta es correcta
       const newAnswer: UserAnswer = {
-        question: currentQuestion.question,
+        questionId: currentQuestion.questionId,
         selectedOption,
         isCorrect,
+        createdAt:new Date()
       };
 
       // Guardar la respuesta
@@ -81,20 +82,41 @@ export const QuestionForm: React.FC = () => {
     }
   };
 
+  const saveAnswer = (question: UserAnswer): void => {
+    // Recuperar las respuestas guardadas como string desde localStorage
+    const answerSaved = localStorage.getItem('respuestasUsuario');
+  
+    // Convertir el string JSON a un array de UserAnswer o inicializar como un array vacío
+    const answers: UserAnswer[] = answerSaved ? (JSON.parse(answerSaved) as UserAnswer[]) : [];
+  
+    // Agregar la nueva respuesta al array
+    answers.push(question);
+  
+    // Guardar el array actualizado en localStorage
+    localStorage.setItem('respuestasUsuario', JSON.stringify(answers));
+  };
+  
+
   return (
     <Formik
       initialValues={{
         selectedOption: "",
       }}
-      onSubmit={(values, { resetForm }) => {
+      onSubmit={(values, ) => {
         console.log("Respuesta guardada:", values.selectedOption);
+        const correctAnswer =  currentQuestion.answerOptions.find((r)=>r.correctAnswer === true);
 
+        const isValid = values.selectedOption === correctAnswer?.option
+        console.log(isValid)
         // Guarda la respuesta seleccionada
         handleOptionChange(values.selectedOption);
-
-        // Limpia el formulario para la siguiente pregunta
-        resetForm();
-
+          const newAnswer:UserAnswer ={
+            questionId:currentQuestion.questionId,
+            selectedOption:values.selectedOption,
+            isCorrect: isValid,
+            createdAt:new Date()
+          }
+          saveAnswer(newAnswer)
         // Avanza a la siguiente pregunta
         if(values.selectedOption === ""){
           alert("Debes seleccionar una respuesta para continuar");
@@ -142,7 +164,7 @@ export const QuestionForm: React.FC = () => {
                 disabled={!values.selectedOption}
               >
                 {currentQuestionIndex < questionData.length - 1
-                  ? "Guardar y Siguiente"
+                  ? "Confirmar Respuesta"
                   : "Finalizar"}
               </Button>
             </div>

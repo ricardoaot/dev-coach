@@ -6,22 +6,24 @@ import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface AnswerOption {
   option: string;
-  correct_answer: boolean;
+  correctAnswer: boolean;
 }
 
 export interface QuestionData {
+  questionId: string;
   question: string;
   explanation: string;
-  question_level: string;
-  question_last: string;
+  questionLevel: string;
+  questionLast: string;
   topic: string;
-  answer_options: AnswerOption[];
+  answerOptions: AnswerOption[];
 }
 
 export interface UserAnswer {
-  question: string;
+  questionId: string;
   selectedOption: string;
   isCorrect: boolean;
+  createdAt: Date;
 }
 
 interface QuestionFormContentProps {
@@ -58,7 +60,7 @@ export const QuestionFormContent: React.FC<QuestionFormContentProps> = ({
         </ReactMarkdown>
         <hr />
       </h1>
-      {questionData.answer_options.map((option, index) => (
+      {questionData.answerOptions.map((option, index) => (
         <div key={index} className="flex items-start gap-2 mb-2">
           <div className="mt-1.5">
             <RadioInput
