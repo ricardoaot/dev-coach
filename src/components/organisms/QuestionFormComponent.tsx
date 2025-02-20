@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import { QuestionData, UserAnswer } from "../molecules/QuestionForm";
+import { QuestionData, UserAnswer } from "../../interfaces/interfaces";
 import { QuestionFormContent } from "../molecules/QuestionForm";
 import { Button } from "../atoms/Button";
 import preguntas from "../../assets/preguntas_completas_react.json";
@@ -129,10 +129,10 @@ export const QuestionForm: React.FC = () => {
           };
           saveAnswer(newAnswer);
 
-          // Mostrar explicación antes de avanzar
+          //* Primero mostramos la explicación
           setShowExplanation(true);
         } else {
-          // Si ya se mostró la explicación, avanzar a la siguiente pregunta
+          //* Ya se mostró la explicación, avanzamos a la siguiente pregunta
           setShowExplanation(false);
           handleNext();
         }
