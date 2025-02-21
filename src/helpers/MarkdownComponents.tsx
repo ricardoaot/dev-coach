@@ -15,6 +15,10 @@ const MarkdownComponents: Components = {
       </code>
     );
   },
+  a: ({ href, children }) => {
+    if (String(children).includes("⬆ Volver a índice")) return null;
+    return <a href={href}>{children}</a>;
+  },
 };
 
 export default MarkdownComponents;
