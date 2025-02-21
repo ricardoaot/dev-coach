@@ -2,15 +2,18 @@ import { Form, Formik } from "formik";
 import { QuestionData, UserAnswer } from "../../interfaces/interfaces";
 import { QuestionFormContent } from "../molecules/QuestionForm";
 import { Button } from '../atoms/Button'
-import preguntas from "../../assets/preguntas_completas_react.json";
 import { useState } from "react";
-import QuestionExplanation from "../molecules/QuestionExplanation";
 
-export const QuestionForm: React.FC = () => {
-  const questionData: QuestionData[] = preguntas;
+interface QuestionFormProps {
+  getQuestion: (question: QuestionData) => void;
+  setShowExplanation:(arg:boolean)=> void;
+  showExplanation:boolean
+  questionData:QuestionData[]
+  setIsValid :(arg:boolean)=> void;
+}
 
-  const [isValid, setIsValid] = useState(false);
-  const [showExplanation, setShowExplanation] = useState(false);
+export const QuestionForm: React.FC<QuestionFormProps> = ({getQuestion, setIsValid,questionData, setShowExplanation,showExplanation}) => {
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Controla la pregunta actual
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: number]: string;
@@ -53,6 +56,8 @@ export const QuestionForm: React.FC = () => {
 
   const currentQuestion = questionData[currentQuestionIndex];
 
+
+
   const handleSkip = () => {
     // Simplemente avanza a la siguiente pregunta sin guardar la respuesta actual
     if (currentQuestionIndex < questionData.length - 1) {
@@ -73,7 +78,7 @@ export const QuestionForm: React.FC = () => {
 
     // Agregar la nueva respuesta al array
     answers.push(question);
-
+    getQuestion(currentQuestion)
     // Guardar el array actualizado en localStorage
     localStorage.setItem("respuestasUsuario", JSON.stringify(answers));
   };
@@ -117,7 +122,7 @@ export const QuestionForm: React.FC = () => {
       }}
     >
       {({ values, handleChange, handleSubmit }) => (
-        <div className="max-w-2xl p-4 mx-auto border rounded shadow">
+        <div className="w-full p-4 mx-auto border rounded shadow">
           <Form onSubmit={handleSubmit}>
             <QuestionFormContent
               questionData={currentQuestion}
@@ -164,19 +169,6 @@ export const QuestionForm: React.FC = () => {
               </Button>
             </div>
           </Form>
-
-          <div
-            className={`mt-3 transform transition-all duration-500 ease-out ${
-              showExplanation 
-                ? "opacity-100 -translate-y-0 pointer-events-auto"
-                : "opacity-0 -translate-y-4 max-h-0  pointer-events-none"
-            }`}
-          >
-            <QuestionExplanation
-              questionData={currentQuestion}
-              isValid={isValid}
-            />
-          </div>
         </div>
       )}
     </Formik>
