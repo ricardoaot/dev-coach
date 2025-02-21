@@ -22,6 +22,7 @@ export interface UserAnswer {
 
 export interface QuestionExplanationProps {
   questionData: QuestionData;
+  isValid:boolean;
 }
 
 export interface QuestionFormContentProps {

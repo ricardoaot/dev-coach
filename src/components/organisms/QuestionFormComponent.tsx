@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik";
 import { QuestionData, UserAnswer } from "../../interfaces/interfaces";
 import { QuestionFormContent } from "../molecules/QuestionForm";
-import { Button } from "../atoms/Button";
+import { Button } from '../atoms/Button'
 import preguntas from "../../assets/preguntas_completas_react.json";
 import { useState } from "react";
 import QuestionExplanation from "../molecules/QuestionExplanation";
@@ -9,6 +9,7 @@ import QuestionExplanation from "../molecules/QuestionExplanation";
 export const QuestionForm: React.FC = () => {
   const questionData: QuestionData[] = preguntas;
 
+  const [isValid, setIsValid] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Controla la pregunta actual
   const [selectedOptions, setSelectedOptions] = useState<{
@@ -50,29 +51,6 @@ export const QuestionForm: React.FC = () => {
     }
   };
 
-  //   // Filtra solo las preguntas respondidas y verifica si la respuesta es correcta
-  //   const responses: UserAnswer[] = questionData
-  //     .map((question, index) => {
-  //       if (selectedOptions[index]) {
-  //         const isCorrect = selectedOptions[index] === ; // Verifica si la respuesta es correcta
-  //         return {
-  //           question: question.question,
-  //           selectedOption: selectedOptions[index],
-  //           isCorrect: isCorrect,
-  //         };
-  //       }
-  //       return null; // No incluye preguntas no respondidas
-  //     })
-  //     .filter((response) => response !== null); // Elimina preguntas saltadas
-
-  //   try {
-  //     await axios.post("/api/saveResponses", responses);
-  //     console.log("Respuestas guardadas en el servidor.");
-  //   } catch (error) {
-  //     console.error("Error al guardar respuestas:", error);
-  //   }
-
-  // };
   const currentQuestion = questionData[currentQuestionIndex];
 
   const handleSkip = () => {
@@ -117,7 +95,8 @@ export const QuestionForm: React.FC = () => {
             (r) => r.correctAnswer === true
           );
           const isValid = values.selectedOption === correctAnswer?.option;
-          console.log(isValid);
+          setIsValid(isValid);
+
           // Guarda la respuesta seleccionada
           handleOptionChange(values.selectedOption);
           const newAnswer: UserAnswer = {
@@ -185,11 +164,19 @@ export const QuestionForm: React.FC = () => {
               </Button>
             </div>
           </Form>
-          {showExplanation && (
-            <div className="mt-3">
-              <QuestionExplanation questionData={currentQuestion} />
-            </div>
-          )}
+
+          <div
+            className={`mt-3 transform transition-all duration-500 ease-out ${
+              showExplanation 
+                ? "opacity-100 -translate-y-0 pointer-events-auto"
+                : "opacity-0 -translate-y-4 max-h-0  pointer-events-none"
+            }`}
+          >
+            <QuestionExplanation
+              questionData={currentQuestion}
+              isValid={isValid}
+            />
+          </div>
         </div>
       )}
     </Formik>
