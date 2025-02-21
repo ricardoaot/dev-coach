@@ -1,4 +1,4 @@
-import { RadioInput } from "../atoms/RadioInput";
+import { RadioInput } from "../atoms/inputs/RadioInput";
 import ReactMarkdown from "react-markdown";
 import MarkdownComponents from "../../helpers/MarkdownComponents";
 import { QuestionFormContentProps } from "../../interfaces/interfaces";
