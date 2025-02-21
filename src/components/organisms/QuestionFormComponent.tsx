@@ -99,26 +99,25 @@ export const QuestionForm: React.FC = () => {
     // Guardar el array actualizado en localStorage
     localStorage.setItem("respuestasUsuario", JSON.stringify(answers));
   };
-
   return (
     <Formik
       initialValues={{
         selectedOption: "",
       }}
-      onSubmit={(values) => {
-        if (!showExplanation) {
-          if (values.selectedOption === "") {
-            alert("Debes seleccionar una respuesta para continuar");
-            return;
-          }
+      enableReinitialize={true} // Esto permite que el formulario se reinicie cuando cambian las props
+      onSubmit={(values, { resetForm }) => {
+        // Agregamos resetForm a los parámetros
+        if (values.selectedOption === "") {
+          alert("Debes seleccionar una respuesta para continuar");
+          return;
+        }
 
+        if (!showExplanation) {
           const correctAnswer = currentQuestion.answerOptions.find(
             (r) => r.correctAnswer === true
           );
-
           const isValid = values.selectedOption === correctAnswer?.option;
           console.log(isValid);
-
           // Guarda la respuesta seleccionada
           handleOptionChange(values.selectedOption);
           const newAnswer: UserAnswer = {
@@ -128,12 +127,12 @@ export const QuestionForm: React.FC = () => {
             createdAt: new Date(),
           };
           saveAnswer(newAnswer);
-
           //* Primero mostramos la explicación
           setShowExplanation(true);
         } else {
           //* Ya se mostró la explicación, avanzamos a la siguiente pregunta
           setShowExplanation(false);
+          resetForm(); // Reseteamos el formulario antes de pasar a la siguiente pregunta
           handleNext();
         }
       }}
@@ -150,7 +149,6 @@ export const QuestionForm: React.FC = () => {
                 });
               }}
             />
-
             <div className="flex items-center gap-2 mt-4">
               <input
                 type="radio"
@@ -162,7 +160,6 @@ export const QuestionForm: React.FC = () => {
               />
               <label htmlFor="no-se">No sé</label>
             </div>
-
             <div className="flex justify-between mt-4">
               <Button
                 type="button"
@@ -175,7 +172,6 @@ export const QuestionForm: React.FC = () => {
               >
                 Skip
               </Button>
-
               <Button
                 type="submit"
                 className="text-white bg-blue-500"
@@ -189,7 +185,6 @@ export const QuestionForm: React.FC = () => {
               </Button>
             </div>
           </Form>
-
           {showExplanation && (
             <div className="mt-3">
               <QuestionExplanation questionData={currentQuestion} />
