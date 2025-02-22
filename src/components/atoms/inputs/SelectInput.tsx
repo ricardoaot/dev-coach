@@ -48,7 +48,7 @@ const SelectInput: React.FC<SelectProps> = ({
         <div className="relative w-full  rounded-lg border">
           <ComboboxButton
             onClick={handleList}
-            className="relative w-full bg-white gap-2 "
+            className="relative w-full "
           >
             <ComboboxInput
               className="w-full text-sm md:text-base py-1 px-4 -ml-3"

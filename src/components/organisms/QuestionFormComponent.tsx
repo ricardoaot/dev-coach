@@ -69,8 +69,10 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({getQuestion, setIsVal
 
   const saveAnswer = (question: UserAnswer): void => {
     // Recuperar las respuestas guardadas como string desde localStorage
-    const answerSaved = localStorage.getItem("respuestasUsuario");
-
+    if (!currentQuestion.topic) return; // Asegurar que la pregunta tenga un tópico definido
+    
+    const topicKey = `respuestas${currentQuestion.topic}`; 
+    const answerSaved = localStorage.getItem(topicKey);
     // Convertir el string JSON a un array de UserAnswer o inicializar como un array vacío
     const answers: UserAnswer[] = answerSaved
       ? (JSON.parse(answerSaved) as UserAnswer[])
@@ -78,9 +80,10 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({getQuestion, setIsVal
 
     // Agregar la nueva respuesta al array
     answers.push(question);
-    getQuestion(currentQuestion)
-    // Guardar el array actualizado en localStorage
-    localStorage.setItem("respuestasUsuario", JSON.stringify(answers));
+  // Guardar el array actualizado en localStorage bajo la clave específica del tópico
+  localStorage.setItem(topicKey, JSON.stringify(answers));
+  // Continuar con la lógica existente
+  getQuestion(currentQuestion);
   };
   return (
     <Formik
