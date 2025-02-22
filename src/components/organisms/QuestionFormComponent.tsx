@@ -1,15 +1,19 @@
 import { Form, Formik } from "formik";
 import { QuestionData, UserAnswer } from "../../interfaces/interfaces";
 import { QuestionFormContent } from "../molecules/QuestionForm";
-import { Button } from "../atoms/Button";
-import preguntas from "../../assets/preguntas_completas_react.json";
+import { Button } from '../atoms/Button'
 import { useState } from "react";
-import QuestionExplanation from "../molecules/QuestionExplanation";
 
-export const QuestionForm: React.FC = () => {
-  const questionData: QuestionData[] = preguntas;
+interface QuestionFormProps {
+  getQuestion: (question: QuestionData) => void;
+  setShowExplanation:(arg:boolean)=> void;
+  showExplanation:boolean
+  questionData:QuestionData[]
+  setIsValid :(arg:boolean)=> void;
+}
 
-  const [showExplanation, setShowExplanation] = useState(false);
+export const QuestionForm: React.FC<QuestionFormProps> = ({getQuestion, setIsValid,questionData, setShowExplanation,showExplanation}) => {
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Controla la pregunta actual
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: number]: string;
@@ -50,30 +54,9 @@ export const QuestionForm: React.FC = () => {
     }
   };
 
-  //   // Filtra solo las preguntas respondidas y verifica si la respuesta es correcta
-  //   const responses: UserAnswer[] = questionData
-  //     .map((question, index) => {
-  //       if (selectedOptions[index]) {
-  //         const isCorrect = selectedOptions[index] === ; // Verifica si la respuesta es correcta
-  //         return {
-  //           question: question.question,
-  //           selectedOption: selectedOptions[index],
-  //           isCorrect: isCorrect,
-  //         };
-  //       }
-  //       return null; // No incluye preguntas no respondidas
-  //     })
-  //     .filter((response) => response !== null); // Elimina preguntas saltadas
-
-  //   try {
-  //     await axios.post("/api/saveResponses", responses);
-  //     console.log("Respuestas guardadas en el servidor.");
-  //   } catch (error) {
-  //     console.error("Error al guardar respuestas:", error);
-  //   }
-
-  // };
   const currentQuestion = questionData[currentQuestionIndex];
+
+
 
   const handleSkip = () => {
     // Simplemente avanza a la siguiente pregunta sin guardar la respuesta actual
@@ -86,8 +69,10 @@ export const QuestionForm: React.FC = () => {
 
   const saveAnswer = (question: UserAnswer): void => {
     // Recuperar las respuestas guardadas como string desde localStorage
-    const answerSaved = localStorage.getItem("respuestasUsuario");
-
+    if (!currentQuestion.topic) return; // Asegurar que la pregunta tenga un tópico definido
+    
+    const topicKey = `respuestas${currentQuestion.topic}`; 
+    const answerSaved = localStorage.getItem(topicKey);
     // Convertir el string JSON a un array de UserAnswer o inicializar como un array vacío
     const answers: UserAnswer[] = answerSaved
       ? (JSON.parse(answerSaved) as UserAnswer[])
@@ -95,9 +80,10 @@ export const QuestionForm: React.FC = () => {
 
     // Agregar la nueva respuesta al array
     answers.push(question);
-
-    // Guardar el array actualizado en localStorage
-    localStorage.setItem("respuestasUsuario", JSON.stringify(answers));
+  // Guardar el array actualizado en localStorage bajo la clave específica del tópico
+  localStorage.setItem(topicKey, JSON.stringify(answers));
+  // Continuar con la lógica existente
+  getQuestion(currentQuestion);
   };
   return (
     <Formik
@@ -117,7 +103,8 @@ export const QuestionForm: React.FC = () => {
             (r) => r.correctAnswer === true
           );
           const isValid = values.selectedOption === correctAnswer?.option;
-          console.log(isValid);
+          setIsValid(isValid);
+
           // Guarda la respuesta seleccionada
           handleOptionChange(values.selectedOption);
           const newAnswer: UserAnswer = {
@@ -138,7 +125,7 @@ export const QuestionForm: React.FC = () => {
       }}
     >
       {({ values, handleChange, handleSubmit }) => (
-        <div className="max-w-2xl p-4 mx-auto border rounded shadow">
+        <div className="w-full p-4 mx-auto border rounded shadow">
           <Form onSubmit={handleSubmit}>
             <QuestionFormContent
               questionData={currentQuestion}
@@ -185,11 +172,6 @@ export const QuestionForm: React.FC = () => {
               </Button>
             </div>
           </Form>
-          {showExplanation && (
-            <div className="mt-3">
-              <QuestionExplanation questionData={currentQuestion} />
-            </div>
-          )}
         </div>
       )}
     </Formik>

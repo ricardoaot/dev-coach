@@ -1,9 +1,10 @@
 import { QuestionForm } from "./components/organisms/QuestionFormComponent";
+import QuizTemplate from "./components/templates/QuizTemplate";
 
 function App() {
   return (
-    <div className="flex justify-center items-center w-screen h-screen">
-      <QuestionForm />
+    <div className="flex w-screen h-screen">
+        <QuizTemplate/>
     </div>
   );
 }
