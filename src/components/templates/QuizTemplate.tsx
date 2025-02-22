@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import QuestionExplanation from "../molecules/QuestionExplanation";
 import { AnswerResult } from "../organisms/AnswerResult";
 import { QuestionForm } from "../organisms/QuestionFormComponent";
 import { QuestionData } from "../../interfaces/interfaces";
-import preguntas from "../../assets/preguntas_completas_react.json";
+// import preguntas from "../../assets/preguntas_completas_react.json";
+import Filters from "../organisms/Filters";
 const QuizTemplate = () => {
-  const questionData: QuestionData[] = preguntas;
+  // const questionData: QuestionData[] = preguntas;
   const [showExplanation, setShowExplanation] = useState(false);
   const [isValid, setIsValid] = useState(false);
-
+  const [questionData, setQuestionData] = useState<QuestionData[]>([]);
   const [currentQuestion, SetCurrentQuestion] = useState<QuestionData>();
+  const memoizedQuestionData = useMemo(() => questionData, [questionData]);
 
   const getCurrentQuestion = (question: QuestionData) => {
     SetCurrentQuestion(question);
@@ -18,26 +20,40 @@ const QuizTemplate = () => {
   const correctAnswer = currentQuestion?.answerOptions.find(
     (r) => r.correctAnswer
   );
+    // Recibe la data de `Filters`
+    const handleDataChange = useCallback((data: QuestionData[]) => {
+      if (JSON.stringify(data) !== JSON.stringify(questionData)) {
+        console.log("me estoy ejecutando");
+        setQuestionData(data);
+      }
+    }, [questionData]);
+    
+    console.log(questionData)
   return (
     <>
-      <div className="flex flex-col w-full lg:w-[700px] overflow-auto mx-4 h-screen gap-4">
+      <div className="flex flex-col w-full  sm:w-[500px] md:w-[500px] overflow-auto mx-4  gap-4">
         {/* { Filtros} */}
-        <div>Filtros q todavia no estan XD</div>
+        <Filters onDataChange={handleDataChange}></Filters>
 
         {/* {componente form} */}
-        <QuestionForm
-          setIsValid={setIsValid}
-          questionData={questionData}
-          getQuestion={getCurrentQuestion}
-          showExplanation={showExplanation}
-          setShowExplanation={setShowExplanation}
-        />
+
+       {memoizedQuestionData && memoizedQuestionData.length > 0 ? (
+          <QuestionForm
+            setIsValid={setIsValid}
+            questionData={questionData}
+            getQuestion={getCurrentQuestion}
+            showExplanation={showExplanation}
+            setShowExplanation={setShowExplanation}
+          />
+        ) : (
+          <p className="text-center text-gray-500">Selecciona un cuestionario para comenzar</p>
+        )}
 
         {currentQuestion && (
           <>
             {/* {Feedback Answer} */}
             <div
-              className={`mt-3  transform transition-all duration-500 ease-in-out-out ${
+              className={`mt-3 w-full transform transition-all duration-500 ease-in-out-out ${
                 showExplanation
                   ? "opacity-100 translate-y-0  pointer-events-auto"
                   : "opacity-0 -translate-y-4 h-0 pointer-events-none"

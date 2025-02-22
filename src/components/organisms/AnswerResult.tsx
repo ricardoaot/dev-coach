@@ -7,7 +7,7 @@ interface FeedbackProps {
 
 export const AnswerResult: FC<FeedbackProps> = ({ isValid, answer }) => {
   return (
-    <div className="p-4 mb-5 border rounded-lg">
+    <div className="p-4 mb-5 border rounded-lg shadow-sm">
       <h3 className="text-lg font-semibold">
         {isValid
           ? "La Respuesta es Correcta ✅"

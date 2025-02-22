@@ -25,8 +25,8 @@ export const QuestionFormContent: React.FC<QuestionFormContentProps> = ({
               onChange={handleOptionChange}
             />
           </div>
-          <div className="flex-1">
-            <ReactMarkdown components={MarkdownComponents}>
+          <div className="w-full overflow-x-auto ">
+            <ReactMarkdown  components={MarkdownComponents}>
               {option.option}
             </ReactMarkdown>
           </div>
